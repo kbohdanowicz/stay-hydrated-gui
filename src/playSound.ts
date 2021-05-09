@@ -8,9 +8,10 @@ export default function playSound() {
     console.log("Playing sound...")
     const settings = Settings.get()
     if (!(settings.soundCue == DROPDOWN_NO_SOUND)) {
-        load()
+        load(settings.soundCue)
             .then((buffer: any) => {
                 play(buffer, { volume: settings.volume })
             })
+            .catch((err: any) => console.log(err))
     }
 }
