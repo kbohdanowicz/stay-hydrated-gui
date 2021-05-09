@@ -1,12 +1,13 @@
-const path = require("path")
+import { getThisDirPathWith } from "./jsonIO"
+
 import { BrowserWindow, Menu } from "electron"
 
 export function createOptionsWindow(): BrowserWindow {
     const _window = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,//800
+        height: 900, //600
         webPreferences: {
-            preload: path.join(__dirname, "preload.js")
+            preload: getThisDirPathWith("renderer.js")
         }
     })
     _window.loadFile("public/index.html")

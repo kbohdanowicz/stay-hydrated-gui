@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <meta charset="UTF-8">
+  <title>Hello World!</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 </head>
 <body style="background: #ffffff;">
-    <h1>Options</h1>
-    <label>Interval</label>
-    <input type="range" class="slider" id="slider"
-           min="5" max="90" step="5"
-           width="400">
-    <label id="sliderValueLabel">5</label>
+
+<h1>Options</h1>
+<div>
+  <label>Interval</label>
+  <input type="range" class="slider" id="sip-interval-slider"
+         min="5" max="90" step="5"
+         width="400">
+  <label id="sip-interval-slider-label">5</label>
+</div>
+<div>
+  <label>Volume</label>
+  <input type="range" class="slider" id="volume-slider"
+         min="0" max="100" step="1"
+         width="400">
+  <label id="volume-slider-label">5</label>
+</div>
+<div>
+  <h2>Sound</h2>
+</div>
+<div style="padding-bottom: 10px">
+  <button id="btn-add-sound">Add Sound</button>
+</div>
+<div style="padding-bottom: 10px">
+  <select id="sounds-dropdown" style="width: 150px">
+    <option value="None"></option>
+  </select>
+  <button id="btn-play-sound" style="margin-left: 10px">Play Sound</button>
+</div>
+<div>
+  <span></span>
+  <button id="btn-remove-sound">Remove Sound</button>
+</div>
+
 </body>
 </html>

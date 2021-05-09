@@ -1,13 +1,14 @@
-import { getSettings, updateSettings } from "./jsonIO";
+import { getThisDirPathWith } from "./jsonIO"
+import Settings from "./settings"
 
-const isDev = require("electron-is-dev")
-
+//todo: run only once in production
 export default function initResourcePaths(): void {
-    if (!(isDev)) {
-        const settings = getSettings()
-        const productionPath = "resources/app/"
-        settings.trayIcon = productionPath + settings.trayIcon
-        settings.soundCue = productionPath + settings.soundCue
-        updateSettings(settings)
+    if (Settings.get().isFirstRun) {
+        Settings.update({
+            trayIcon: getThisDirPathWith("../resources/images/water-drop.png"),
+            soundCue: getThisDirPathWith("../resources/sounds/Slurp-SoundBible.com-2051284741.wav"),
+            soundsDirectory: getThisDirPathWith("../resources/sounds/"),
+            isFirstRun: false
+        })
     }
 }

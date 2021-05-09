@@ -1,23 +1,30 @@
+import * as fs from "fs";
+
 const unhandled = require("electron-unhandled")
+const isDev = require("electron-is-dev")
 
 unhandled()
 
-import initResourcePaths from "./resourcePath";
 import playSound from "./playSound"
-import { createOptionsWindow, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./functions"
-import { app, BrowserWindow, Menu, Tray } from "electron"
-import { getSettings } from "./jsonIO"
+import { createOptionsWindow, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./helpers"
+import {app, BrowserWindow, Menu, Tray, ipcMain, dialog} from "electron"
+import * as path from "path"
+import Settings from "./settings"
 
+// initialize extensions
+import "./extensions"
 
+// initialize resource paths
+import initResourcePaths from "./resourcePath"
 initResourcePaths()
 
-let sipIntervalInMillis: number = new Date().getTime() + getSettings().sipInterval
+let sipIntervalInMillis: number = new Date().getTime() + Settings.get().sipInterval
 
 // lateinit
 let countdownId: NodeJS.Timeout
 let tray: Tray
 
-let optionsWindow: BrowserWindow | undefined = undefined
+export let optionsWindow: BrowserWindow | undefined = undefined
 
 function openOptionsWindow(): void {
     if (!optionsWindow) {
@@ -33,7 +40,7 @@ function refreshSipIntervalInMillis(sipInterval: number): void {
 
 // play sound
 function startPlaySoundCountdown(): NodeJS.Timeout {
-    const sipInterval = getSettings().sipInterval
+    const sipInterval = Settings.get().sipInterval
     return setInterval(() => {
         playSound()
         restartPlaySoundCountdown()
@@ -42,13 +49,13 @@ function startPlaySoundCountdown(): NodeJS.Timeout {
 
 function restartPlaySoundCountdown(): void {
     clearInterval(countdownId)
-    refreshSipIntervalInMillis(getSettings().sipInterval)
+    refreshSipIntervalInMillis(Settings.get().sipInterval)
     countdownId = startPlaySoundCountdown()
 }
 
 const menuTemplate: MenuTemplate = [
     {
-        label: getNextSipLabel(getTimeLeft(sipIntervalInMillis)), type: 'normal', id: 'nextSip',  enabled: false
+        label: getNextSipLabel(getTimeLeft(sipIntervalInMillis)), type: 'normal', enabled: false
     },
     {
         label: 'Options', type: 'normal', click: () => { openOptionsWindow() }
@@ -72,10 +79,13 @@ app.whenReady().then(() => {
         }
     })
 
-    openOptionsWindow()
+    if (isDev) {
+        openOptionsWindow()
+        optionsWindow!.webContents.openDevTools()
+    }
 
     // tray
-    tray = new Tray(getSettings().trayIcon)
+    tray = new Tray(Settings.get().trayIcon)
     tray.setToolTip("Stay Hydrated")
     const contextMenu = Menu.buildFromTemplate(menuTemplate)
     tray.setContextMenu(contextMenu)
@@ -86,7 +96,36 @@ app.whenReady().then(() => {
     // update tray menu every second
     setInterval(() => {
         tray.setContextMenu(getUpdatedContextMenu(menuTemplate, getTimeLeft(sipIntervalInMillis)))
-    }, 500)
+    }, 1000)
+
+    // IPCMain
+    ipcMain.on("open-sound-file-selection-dialog", (event) => {
+        const options = {
+            title: "Select sound file",
+            buttonLabel: "Select",
+            properties: ["openFile"],
+            filters: [
+                { name: "Sounds", extensions: ["mp3", "wav"] }
+            ]
+        }
+        // @ts-ignore
+        dialog.showOpenDialog(optionsWindow, options)
+            .then(res => {
+                if (!(res.canceled)) {
+                    const selectedSoundPath = res.filePaths[0]
+                    const soundBaseName = path.basename(selectedSoundPath)
+                    const copiedSoundPath = Settings.get().soundsDirectory + soundBaseName
+
+                    fs.copyFileSync(selectedSoundPath, copiedSoundPath)
+                    console.log("File was copied to destination")
+
+                    Settings.update({ soundCue: copiedSoundPath })
+
+                    event.reply("update-selected-sound-label", soundBaseName, copiedSoundPath)
+                }
+            })
+            .catch(err => console.log(err))
+    })
 })
 
 app.on('window-all-closed', () => {
