@@ -7,7 +7,7 @@ unhandled()
 
 import playSound from "./playSound"
 import { createOptionsWindow, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./helpers"
-import {app, BrowserWindow, Menu, Tray, ipcMain, dialog} from "electron"
+import { app, BrowserWindow, Menu, Tray, ipcMain, dialog, screen } from "electron"
 import * as path from "path"
 import Settings from "./settings"
 
@@ -16,6 +16,8 @@ import "./extensions"
 
 // initialize resource paths
 import initResourcePaths from "./resourcePath"
+import {getThisDirPathWith} from "./jsonIO";
+import {showSipNotification} from "./notification";
 initResourcePaths()
 
 let sipIntervalInMillis: number = new Date().getTime() + Settings.get().sipInterval
@@ -43,6 +45,7 @@ function startPlaySoundCountdown(): NodeJS.Timeout {
     const sipInterval = Settings.get().sipInterval
     return setInterval(() => {
         playSound()
+        showSipNotification()
         restartPlaySoundCountdown()
     }, sipInterval)
 }
@@ -55,13 +58,13 @@ function restartPlaySoundCountdown(): void {
 
 const menuTemplate: MenuTemplate = [
     {
-        label: getNextSipLabel(getTimeLeft(sipIntervalInMillis)), type: 'normal', enabled: false
+        id: "nextSip", label: getNextSipLabel(getTimeLeft(sipIntervalInMillis)), type: 'normal', enabled: false
     },
     {
-        label: 'Options', type: 'normal', click: () => { openOptionsWindow() }
+        label: 'Options', type: 'normal', click: openOptionsWindow
     },
     {
-        label: 'Restart', type: 'normal', click: () => { restartPlaySoundCountdown() }
+        label: 'Restart', type: 'normal', click: restartPlaySoundCountdown
     },
     {
         label: 'Quit', type: 'normal',
@@ -70,6 +73,7 @@ const menuTemplate: MenuTemplate = [
             app.quit()
         }
     },
+
 ]
 
 app.whenReady().then(() => {
@@ -80,6 +84,8 @@ app.whenReady().then(() => {
     })
 
     if (isDev) {
+        menuTemplate.unshift({ label: 'Show notification', type: 'normal', click: showSipNotification })
+
         openOptionsWindow()
         optionsWindow!.webContents.openDevTools()
     }
@@ -125,6 +131,10 @@ app.whenReady().then(() => {
                 }
             })
             .catch(err => console.log(err))
+    })
+
+    ipcMain.on("show-error-file-already-on-list", () => {
+        dialog.showErrorBox("File name error", "Sound with that name is already on the list")
     })
 })
 

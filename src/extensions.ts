@@ -1,3 +1,5 @@
+import {ISettings} from "./types";
+
 declare global {
     interface Number {
         run(block: (it: number) => void): void
@@ -7,6 +9,12 @@ declare global {
     }
     interface Boolean {
         run(block: (it: string) => void): void
+    }
+    interface Object {
+        run(block: (it: object) => void): void
+    }
+    interface ISettings {
+        run(block: (it: ISettings) => void): void
     }
 }
 
@@ -19,6 +27,10 @@ String.prototype.run = function (block: (it: string) => void): void {
 }
 
 Boolean.prototype.run = function (block: (it: string) => void): void {
+    block(this)
+}
+
+ISettings.prototype.run = function (block: (it: ISettings) => void): void {
     block(this)
 }
 

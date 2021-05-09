@@ -1,0 +1,10 @@
+.value-label {
+    position: relative;
+    top: -4px;
+}
+
+.name-label {
+    position: relative;
+    top: -4px;
+    margin-right: 2px;
+}

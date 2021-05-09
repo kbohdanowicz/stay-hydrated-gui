@@ -10,41 +10,41 @@ window.addEventListener("DOMContentLoaded", () => {
     const sixtySeconds = 1000 * 60
 
     // sip interval slider
-    const sipIntervalSlider = {
-        ref: document.getElementById("sip-interval-slider") as HTMLInputElement,
-        label: document.getElementById("sip-interval-slider-label")!
+    const sliderSipInterval = {
+        ref: document.getElementById("slider-sip-interval") as HTMLInputElement,
+        label: document.getElementById("label-sip-interval") as HTMLLabelElement
     }
 
     function updateSipInterval(): void {
-        const minutes = Number(sipIntervalSlider.ref.value)
+        const minutes = Number(sliderSipInterval.ref.value)
         Settings.update({ sipInterval: sixtySeconds * minutes})
     }
 
-    sipIntervalSlider.ref.addEventListener("change", updateSipInterval)
-    sipIntervalSlider.ref.addEventListener("input", () => {
-        sipIntervalSlider.label.innerText = String(sipIntervalSlider.ref.value)
+    sliderSipInterval.ref.addEventListener("change", updateSipInterval)
+    sliderSipInterval.ref.addEventListener("input", () => {
+        sliderSipInterval.label.innerText = `${sliderSipInterval.ref.value} minutes`
     })
 
     // volume slider
-    const volumeSlider = {
-        ref: document.getElementById("volume-slider") as HTMLInputElement,
-        label: document.getElementById("volume-slider-label")!
+    const sliderVolume = {
+        ref: document.getElementById("slider-volume") as HTMLInputElement,
+        label: document.getElementById("label-volume") as HTMLLabelElement
     }
 
     function updateVolume(): void {
-        const volume = Number(volumeSlider.ref.value)
+        const volume = Number(sliderVolume.ref.value)
         Settings.update({ volume: volume / 100 })
     }
 
-    volumeSlider.ref.addEventListener("change", updateVolume)
-    volumeSlider.ref.addEventListener("input", () => {
-        volumeSlider.label.innerText = String(volumeSlider.ref.value)
+    sliderVolume.ref.addEventListener("change", updateVolume)
+    sliderVolume.ref.addEventListener("input", () => {
+        sliderVolume.label.innerText = String(sliderVolume.ref.value)
     })
 
     // buttons
-    function flipButtonsVisibilityIfNeeded(): void {
-        btnRemoveSound.disabled = soundsDropdown.value == DROPDOWN_NO_SOUND
-        btnPlaySound.disabled = soundsDropdown.value == DROPDOWN_NO_SOUND
+    function flipButtonsVisibility(): void {
+        btnRemoveSound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND
+        btnPlaySound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND
     }
 
     const btnPlaySound = document.getElementById("btn-play-sound")  as HTMLButtonElement
@@ -53,56 +53,99 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnRemoveSound = document.getElementById("btn-remove-sound") as HTMLButtonElement
     btnRemoveSound.addEventListener("click", () => {
         // todo: show "Are you sure?" dialog
-        // todo?: replace dropdown with table with remove buttons on each row
-        fs.rmSync(soundsDropdown.value)
-        soundsDropdown.remove(soundsDropdown.selectedIndex)
-        soundsDropdown.value = DROPDOWN_NO_SOUND
-        flipButtonsVisibilityIfNeeded()
+        fs.rmSync(dropdownSounds.value)
+        dropdownSounds.remove(dropdownSounds.selectedIndex)
+        dropdownSounds.value = DROPDOWN_NO_SOUND
+        flipButtonsVisibility()
     })
 
     const btnAddSound = document.getElementById("btn-add-sound")!
     btnAddSound.addEventListener("click", () => ipcRenderer.send("open-sound-file-selection-dialog"))
 
-    // sounds dropdown
-    const soundsDropdown = document.getElementById("sounds-dropdown") as HTMLSelectElement
 
-    soundsDropdown.addEventListener("change", () => {
-        Settings.update({ soundCue: soundsDropdown.value })
-        flipButtonsVisibilityIfNeeded()
+    // dropdown sounds
+    const dropdownSounds = document.getElementById("dropdown-sounds") as HTMLSelectElement
+
+    dropdownSounds.addEventListener("change", () => {
+        Settings.update({ soundCue: dropdownSounds.value })
+        flipButtonsVisibility()
     })
+
+    // notification:
+    // - checkbox
+    const checkboxNotification = document.getElementById("checkbox-show-notification") as HTMLInputElement
+
+    checkboxNotification.addEventListener("input", () => {
+        updateNotificationEnabled()
+        console.log(checkboxNotification.checked)
+        sliderNotificationDuration.ref.disabled = !(checkboxNotification.checked)
+    })
+
+    function updateNotificationEnabled(): void {
+        const checked = checkboxNotification.checked
+        Settings.update({ notification: { enabled: checked } })
+    }
+
+    // - duration
+    const sliderNotificationDuration = {
+        ref: document.getElementById("slider-notification-duration") as HTMLInputElement,
+        label: document.getElementById("label-notification-duration") as HTMLLabelElement
+    }
+
+    function updateNotificationDuration(): void {
+        const duration = Number(sliderNotificationDuration.ref.value)
+        Settings.update({ notification: { duration: duration * 1000 } })
+    }
+
+    sliderNotificationDuration.ref.addEventListener("change", updateNotificationDuration)
+    sliderNotificationDuration.ref.addEventListener("input", () => {
+        const duration = Number(sliderNotificationDuration.ref.value)
+        sliderNotificationDuration.label.innerText = duration + (duration == 1 ? " second" : " seconds")
+    })
+    //
 
     // set initial values of sliders and labels
     {
         const settings = Settings.get()
 
-        volumeSlider.ref.value = String(settings.volume * 100)
-        volumeSlider.label.innerText = String(volumeSlider.ref.value)
+        sliderVolume.ref.value = String(settings.volume * 100)
+        sliderVolume.label.innerText = String(sliderVolume.ref.value)
 
-        sipIntervalSlider.ref.value = String(settings.sipInterval / sixtySeconds)
-        sipIntervalSlider.label.innerText = String(sipIntervalSlider.ref.value)
+        sliderSipInterval.ref.value = String(settings.sipInterval / sixtySeconds)
+        sliderSipInterval.label.innerText = `${sliderSipInterval.ref.value} minutes`
+
+
+        checkboxNotification.checked = settings.notification.enabled
+
+        sliderNotificationDuration.ref.disabled = !(checkboxNotification.checked)
+        sliderNotificationDuration.ref.value = String(settings.notification.duration / 1000)
+
+        const duration = Number(sliderNotificationDuration.ref.value)
+        sliderNotificationDuration.label.innerText = duration + (duration == 1 ? " second" : " seconds")
 
         const soundFileNames = fs.readdirSync(settings.soundsDirectory)
         for (const fileName of soundFileNames) {
             const absoluteFilePath = settings.soundsDirectory + fileName
-            soundsDropdown.add(new Option(fileName, absoluteFilePath))
+            dropdownSounds.add(new Option(fileName, absoluteFilePath))
         }
 
-        soundsDropdown.value = settings.soundCue
-        flipButtonsVisibilityIfNeeded()
+        dropdownSounds.value = settings.soundCue
+        flipButtonsVisibility()
 
         console.log("Initialized HTML values")
     }
 
+    // IPC renderer
     ipcRenderer.on("update-selected-sound-label",
         (event, soundBaseName, selectedSoundPath) => {
-            const optionLabels = Array.from(soundsDropdown.options).map(opt => opt.text)
+            const optionLabels = Array.from(dropdownSounds.options).map(opt => opt.text)
 
             if (!(optionLabels.includes(soundBaseName))) {
-                soundsDropdown.add(new Option(soundBaseName, selectedSoundPath))
-                soundsDropdown.value = selectedSoundPath
-                flipButtonsVisibilityIfNeeded()
+                dropdownSounds.add(new Option(soundBaseName, selectedSoundPath))
+                dropdownSounds.value = selectedSoundPath
+                flipButtonsVisibility()
             } else {
-                // todo: show "File with that name is already on the list" dialog
+                ipcRenderer.send("show-error-file-already-on-list")
             }
         }
     )

@@ -1,8 +1,14 @@
 {
-  "sipInterval": 2700000,
+  "sipInterval": 600000,
   "trayIcon": "C:\\MyPrograms\\JavaScript\\Stay Hydrated\\resources\\images\\water-drop.png",
   "soundCue": "C:\\MyPrograms\\JavaScript\\Stay Hydrated\\resources\\sounds\\different-sound.wav",
   "soundsDirectory": "C:\\MyPrograms\\JavaScript\\Stay Hydrated\\resources\\sounds\\",
-  "volume": 0.23,
-  "isFirstRun": false
+  "volume": 0.2,
+  "isFirstRun": false,
+  "notification": {
+    "enabled": true,
+    "positionX": "left",
+    "positionY": "top",
+    "duration": 5000
+  }
 }

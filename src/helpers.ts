@@ -1,17 +1,20 @@
 import { getThisDirPathWith } from "./jsonIO"
-
 import { BrowserWindow, Menu } from "electron"
+const isDev = require("electron-is-dev")
 
 export function createOptionsWindow(): BrowserWindow {
     const _window = new BrowserWindow({
-        width: 1200,//800
-        height: 900, //600
+        width: isDev ? 1200 : 500,
+        height: isDev ? 900 : 300,
+        title: "Stay Hydrated Options",
         webPreferences: {
             preload: getThisDirPathWith("renderer.js")
-        }
+        },
+        show: false,
+        autoHideMenuBar: !isDev,
     })
-    _window.loadFile("public/index.html")
-        .then()
+    _window.loadFile("public/html/index.html")
+        .then(() => _window.show())
         .catch((err: any) => console.log(err))
 
     return _window
@@ -59,6 +62,7 @@ export type MenuTemplate = Electron.MenuItemConstructorOptions[]
 export function getUpdatedContextMenu(originalMenu: MenuTemplate, newTime: string): Electron.Menu {
     // copy menu template array
     const newMenuTemplate = [...originalMenu]
-    newMenuTemplate[0].label = getNextSipLabel(newTime)
+    const nextSipOption = newMenuTemplate.find((el) => el.id == "nextSip")!
+    nextSipOption.label = getNextSipLabel(newTime)
     return Menu.buildFromTemplate(newMenuTemplate)
 }
