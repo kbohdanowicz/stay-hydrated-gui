@@ -1,15 +1,15 @@
 import * as fs from "fs";
 
-const unhandled = require("electron-unhandled")
-const electronIsDev = require("electron-is-dev")
+import * as unhandled from "electron-unhandled"
+import * as electronIsDev from "electron-is-dev"
 
 // show unhandled exceptions at runtime
 unhandled()
 
+import * as path from "path"
 import playSound from "./playSound"
 import {getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate} from "./helpers"
 import { app, BrowserWindow, Menu, Tray, ipcMain, dialog } from "electron"
-import * as path from "path"
 import Settings from "./settings"
 import {openSipNotificationWindow} from "./notification"
 import initializeResourcePaths from "./resourcePath"

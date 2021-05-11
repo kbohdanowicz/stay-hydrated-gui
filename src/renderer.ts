@@ -61,8 +61,9 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     const btnAddSound = document.getElementById("btn-add-sound")!
-    btnAddSound.addEventListener("click", () => ipcRenderer.send("open-sound-file-selection-dialog"))
-
+    btnAddSound.addEventListener("click", () => {
+        ipcRenderer.send("open-sound-file-selection-dialog")
+    })
 
     // dropdown sounds
     const dropdownSounds = document.getElementById("dropdown-sounds") as HTMLSelectElement
@@ -78,7 +79,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     checkboxNotification.addEventListener("input", () => {
         updateNotificationEnabled()
-        console.log(checkboxNotification.checked)
         sliderNotificationDuration.ref.disabled = !(checkboxNotification.checked)
     })
 

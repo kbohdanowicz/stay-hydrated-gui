@@ -1,6 +1,6 @@
 import {BrowserWindow} from "electron"
 import {getThisDirPathWith} from "./jsonIO"
-const electronIsDev = require("electron-is-dev")
+import * as electronIsDev from "electron-is-dev"
 
 export function createOptionsWindow(): BrowserWindow {
     const _window = new BrowserWindow({
