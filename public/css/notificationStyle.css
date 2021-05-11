@@ -1,0 +1,47 @@
+.close {
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    margin-top: 10px;
+    margin-right: 10px;
+    right: 0;
+}
+.close:hover::before, .close:hover::after {
+    background: #1ebcc5;
+}
+.close::before, .close::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    margin-top: -1px;
+    background: #FDFA0D;
+}
+.close::before {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.close::after {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.close.thick::before, .close.thick::after {
+    height: 4px;
+    margin-top: -2px;
+}
+
+.close.pointy::Before, .close.pointy::after {
+    width: 200%;
+    left: -50%;
+}

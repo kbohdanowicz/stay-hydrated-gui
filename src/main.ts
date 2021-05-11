@@ -1,34 +1,55 @@
 import * as fs from "fs";
 
 const unhandled = require("electron-unhandled")
-const isDev = require("electron-is-dev")
+const electronIsDev = require("electron-is-dev")
 
+// show unhandled exceptions at runtime
 unhandled()
 
 import playSound from "./playSound"
-import { createOptionsWindow, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./helpers"
-import { app, BrowserWindow, Menu, Tray, ipcMain, dialog, screen } from "electron"
+import {getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate} from "./helpers"
+import { app, BrowserWindow, Menu, Tray, ipcMain, dialog } from "electron"
 import * as path from "path"
 import Settings from "./settings"
+import {openSipNotificationWindow} from "./notification"
+import initializeResourcePaths from "./resourcePath"
+//import {menuTemplate} from "./constants";
+import {createOptionsWindow} from "./optionsWindow";
 
 // initialize extensions
 import "./extensions"
 
 // initialize resource paths
-import initResourcePaths from "./resourcePath"
-import {getThisDirPathWith} from "./jsonIO";
-import {showSipNotification} from "./notification";
-initResourcePaths()
+if (Settings.get().isFirstRun) {
+    initializeResourcePaths()
+}
 
 let sipIntervalInMillis: number = new Date().getTime() + Settings.get().sipInterval
-
-// lateinit
-let countdownId: NodeJS.Timeout
 let tray: Tray
+let countdownId: NodeJS.Timeout
+let optionsWindow: BrowserWindow | undefined = undefined
+let notificationWindow: BrowserWindow | undefined = undefined
 
-export let optionsWindow: BrowserWindow | undefined = undefined
+const menuTemplate: MenuTemplate = [
+    {
+        label: "", type: 'normal', enabled: false, id: "nextSip"
+    },
+    {
+        label: 'Options', type: 'normal', click: tryCreatingOptionsWindow
+    },
+    {
+        label: 'Restart', type: 'normal', click: restartSipCountdown
+    },
+    {
+        label: 'Quit', type: 'normal', click: quitApp
+    }
+]
 
-function openOptionsWindow(): void {
+function refreshSipIntervalInMillis(sipInterval: number): void {
+    sipIntervalInMillis = new Date().getTime() + sipInterval
+}
+
+function tryCreatingOptionsWindow(): void {
     if (!optionsWindow) {
         optionsWindow = createOptionsWindow()
     } else {
@@ -36,45 +57,32 @@ function openOptionsWindow(): void {
     }
 }
 
-function refreshSipIntervalInMillis(sipInterval: number): void {
-    sipIntervalInMillis = new Date().getTime() + sipInterval
+function restartSipCountdown(): void {
+    clearInterval(countdownId)
+    refreshSipIntervalInMillis(Settings.get().sipInterval)
+    startSipCountdown()
+}
+
+function quitApp(): void {
+    tray.destroy()
+    app.quit()
 }
 
 // play sound
-function startPlaySoundCountdown(): NodeJS.Timeout {
+function startSipCountdown(): void {
     const sipInterval = Settings.get().sipInterval
-    return setInterval(() => {
+    countdownId = setInterval(() => {
         playSound()
-        showSipNotification()
-        restartPlaySoundCountdown()
+        openSipNotificationWindow()
+        restartSipCountdown()
     }, sipInterval)
 }
 
-function restartPlaySoundCountdown(): void {
-    clearInterval(countdownId)
-    refreshSipIntervalInMillis(Settings.get().sipInterval)
-    countdownId = startPlaySoundCountdown()
+function updateTrayMenuInInterval(interval: number): void {
+    setInterval(() => {
+        tray.setContextMenu(getUpdatedContextMenu(menuTemplate, getTimeLeft(sipIntervalInMillis)))
+    }, interval)
 }
-
-const menuTemplate: MenuTemplate = [
-    {
-        id: "nextSip", label: getNextSipLabel(getTimeLeft(sipIntervalInMillis)), type: 'normal', enabled: false
-    },
-    {
-        label: 'Options', type: 'normal', click: openOptionsWindow
-    },
-    {
-        label: 'Restart', type: 'normal', click: restartPlaySoundCountdown
-    },
-    {
-        label: 'Quit', type: 'normal',
-        click: () => {
-            tray.destroy()
-            app.quit()
-        }
-    },
-
-]
 
 app.whenReady().then(() => {
     app.on('activate', () => {
@@ -83,10 +91,13 @@ app.whenReady().then(() => {
         }
     })
 
-    if (isDev) {
-        menuTemplate.unshift({ label: 'Show notification', type: 'normal', click: showSipNotification })
+    if (electronIsDev) {
+        menuTemplate.unshift({ label: 'Show notification', type: 'normal', click: () => {
+                notificationWindow = openSipNotificationWindow()
+            }
+        })
 
-        openOptionsWindow()
+        tryCreatingOptionsWindow()
         optionsWindow!.webContents.openDevTools()
     }
 
@@ -97,12 +108,10 @@ app.whenReady().then(() => {
     tray.setContextMenu(contextMenu)
 
     // start countdown
-    countdownId = startPlaySoundCountdown()
+    startSipCountdown()
 
     // update tray menu every second
-    setInterval(() => {
-        tray.setContextMenu(getUpdatedContextMenu(menuTemplate, getTimeLeft(sipIntervalInMillis)))
-    }, 1000)
+    updateTrayMenuInInterval(1000)
 
     // IPCMain
     ipcMain.on("open-sound-file-selection-dialog", (event) => {
@@ -135,6 +144,12 @@ app.whenReady().then(() => {
 
     ipcMain.on("show-error-file-already-on-list", () => {
         dialog.showErrorBox("File name error", "Sound with that name is already on the list")
+    })
+
+    ipcMain.on("destroy-notification", () => {
+        notificationWindow?.destroy()
+        const msg = notificationWindow != undefined ? "Destroyed a notification" : "Notification already destroyed"
+        console.log(msg)
     })
 })
 

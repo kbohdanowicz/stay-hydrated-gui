@@ -1,24 +1,4 @@
-import { getThisDirPathWith } from "./jsonIO"
-import { BrowserWindow, Menu } from "electron"
-const isDev = require("electron-is-dev")
-
-export function createOptionsWindow(): BrowserWindow {
-    const _window = new BrowserWindow({
-        width: isDev ? 1200 : 500,
-        height: isDev ? 900 : 300,
-        title: "Stay Hydrated Options",
-        webPreferences: {
-            preload: getThisDirPathWith("renderer.js")
-        },
-        show: false,
-        autoHideMenuBar: !isDev,
-    })
-    _window.loadFile("public/html/index.html")
-        .then(() => _window.show())
-        .catch((err: any) => console.log(err))
-
-    return _window
-}
+import {BrowserWindow, Menu} from "electron"
 
 // todo improve time units (35 min not 34)
 export function getNextSipLabel(newTime: string): string {
@@ -65,4 +45,12 @@ export function getUpdatedContextMenu(originalMenu: MenuTemplate, newTime: strin
     const nextSipOption = newMenuTemplate.find((el) => el.id == "nextSip")!
     nextSipOption.label = getNextSipLabel(newTime)
     return Menu.buildFromTemplate(newMenuTemplate)
+}
+
+export function destroyWindowAfterSeconds(win: BrowserWindow | undefined, delay: number): void {
+    setTimeout(() => {
+        win?.destroy()
+        const msg = win != undefined ? "Destroyed a window" : "Window already destroyed"
+        console.log(msg)
+    }, delay)
 }

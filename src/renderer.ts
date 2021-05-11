@@ -2,8 +2,9 @@ import playSound from "./playSound"
 import {ipcRenderer} from "electron"
 import Settings from "./settings"
 import * as fs from "fs"
-import "./extensions"
 import {DROPDOWN_NO_SOUND} from "./constants"
+
+import "./extensions"
 
 window.addEventListener("DOMContentLoaded", () => {
 

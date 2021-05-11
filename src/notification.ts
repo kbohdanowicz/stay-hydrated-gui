@@ -1,8 +1,10 @@
 import { BrowserWindow, screen } from "electron"
 import Settings from "./Settings"
+import {destroyWindowAfterSeconds} from "./helpers";
+import {getThisDirPathWith} from "./jsonIO";
 
 // todo: custom close "button" (a cross)
-function openNotificationWindow(): BrowserWindow {
+function createNotificationWindow(): BrowserWindow {
     const display = screen.getPrimaryDisplay()
     const displayWidth = display.bounds.width
     const displayHeight = display.bounds.height
@@ -32,9 +34,12 @@ function openNotificationWindow(): BrowserWindow {
         y: bottom,
         frame: false,
         resizable: false,
-        titleBarStyle: "customButtonsOnHover",
+        titleBarStyle: "hidden",
         show: false,
-        alwaysOnTop: true
+        alwaysOnTop: true,
+        webPreferences: {
+            preload: getThisDirPathWith("rendererNotification.js")
+        },
     })
     win.loadFile("public/html/notification.html")
         .then(() => {
@@ -45,14 +50,8 @@ function openNotificationWindow(): BrowserWindow {
     return win
 }
 
-function destroyWindowAfterSeconds(win: BrowserWindow, delay: number): void {
-    setTimeout(() => {
-        win.destroy()
-        console.log("Destroyed a window")
-    }, delay)
-}
-
-export function showSipNotification() {
-    const notificationWindow = openNotificationWindow()
+export function openSipNotificationWindow(): BrowserWindow | undefined {
+    const notificationWindow = createNotificationWindow()
     destroyWindowAfterSeconds(notificationWindow, Settings.get().notification.duration)
+    return notificationWindow
 }
