@@ -3,9 +3,11 @@ export class ISettings {
     trayIcon: string
     soundCue: string
     soundsDirectory: string
+    imagesDirectory: string
     volume: number
     isFirstRun: boolean
     notification: {
+        image: string
         enabled: boolean
         positionX: string
         positionY: string
@@ -18,9 +20,11 @@ export interface UpdateSettingsArgs {
     trayIcon?: string
     soundCue?: string
     soundsDirectory?: string
+    imagesDirectory?: string
     volume?: number,
     isFirstRun?: boolean
     notification?: {
+        image?: string
         enabled?: boolean
         positionX?: string
         positionY?: string

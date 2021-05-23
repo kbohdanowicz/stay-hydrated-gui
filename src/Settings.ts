@@ -12,34 +12,55 @@ function updateSettings(settings: UpdateSettingsArgs): void {
     }
     const newSettings = getSettings()
 
-    settings.sipInterval?.run((_) => newSettings.sipInterval = settings.sipInterval!)
-    settings.trayIcon?.run((_) => newSettings.trayIcon = settings.trayIcon!)
-    settings.soundCue?.run((_) => newSettings.soundCue = settings.soundCue!)
-    settings.soundsDirectory?.run((_) => newSettings.soundsDirectory = settings.soundsDirectory!)
-    settings.volume?.run((_) => newSettings.volume = settings.volume!)
-    settings.isFirstRun?.run((_) => newSettings.isFirstRun = settings.isFirstRun!)
+    settings.sipInterval?.run(() =>
+        newSettings.sipInterval = settings.sipInterval!
+    )
+    settings.trayIcon?.run(() =>
+        newSettings.trayIcon = settings.trayIcon!
+    )
+    settings.soundCue?.run(() =>
+        newSettings.soundCue = settings.soundCue!
+    )
+    settings.soundsDirectory?.run(() =>
+        newSettings.soundsDirectory = settings.soundsDirectory!
+    )
+    settings.imagesDirectory?.run(() =>
+        newSettings.imagesDirectory = settings.imagesDirectory!
+    )
+    settings.volume?.run(() =>
+        newSettings.volume = settings.volume!
+    )
+    settings.isFirstRun?.run(() =>
+        newSettings.isFirstRun = settings.isFirstRun!
+    )
 
-    // settings.notification?.run((it) => {
-    //     // @ts-ignore
-    //     it.enabled = settings.notification.enabled!
-    //     newSettings.notification.positionX = settings.notification.positionX!
-    //     newSettings.notification.positionY = settings.notification.positionY!
-    //     newSettings.notification.duration = settings.notification.duration!
-    // })
-
-    settings.notification?.enabled?.run((_) =>
+    settings.notification?.image?.run(() =>
+        newSettings.notification.image = settings.notification!.image!
+    )
+    settings.notification?.enabled?.run(() =>
         newSettings.notification.enabled = settings.notification!.enabled!
     )
-    settings.notification?.positionX?.run((_) =>
+    settings.notification?.positionX?.run(() =>
         newSettings.notification.positionX = settings.notification!.positionX!
     )
-    settings.notification?.positionY?.run((_) =>
+    settings.notification?.positionY?.run(() =>
         newSettings.notification.positionY = settings.notification!.positionY!
     )
-    settings.notification?.duration?.run((_) =>
+    settings.notification?.duration?.run(() =>
         newSettings.notification.duration = settings.notification!.duration!
     )
 
+    // settings.run((it) => {
+    //     newSettings.sipInterval = it.sipInterval
+    //     newSettings.trayIcon = it.trayIcon!
+    //     newSettings.soundCue = it.soundCue!
+    //     newSettings.soundsDirectory = it.soundsDirectory!
+    //     newSettings.imageDirectory = it.imageDirectory!
+    //     newSettings.notification.enabled = it.notification.enabled!
+    //     newSettings.notification.positionX = it.notification.positionX!
+    //     newSettings.notification.positionY = it.notification.positionY!
+    //     newSettings.notification.duration = it.notification.duration!
+    // })
     writeJsonSync(getThisDirPathWith("../settings/settings.json"), newSettings)
     console.log("Settings updated")
 }

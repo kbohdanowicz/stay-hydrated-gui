@@ -12,7 +12,7 @@ import {getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate} from 
 import { app, BrowserWindow, Menu, Tray, ipcMain, dialog } from "electron"
 import Settings from "./settings"
 import {openSipNotificationWindow} from "./notification"
-import initializeResourcePaths from "./resourcePath"
+import setDefaultSettings from "./firstRun"
 //import {menuTemplate} from "./constants";
 import {createOptionsWindow} from "./optionsWindow";
 
@@ -21,7 +21,7 @@ import "./extensions"
 
 // initialize resource paths
 if (Settings.get().isFirstRun) {
-    initializeResourcePaths()
+    setDefaultSettings()
 }
 
 let sipIntervalInMillis: number = new Date().getTime() + Settings.get().sipInterval
@@ -96,7 +96,6 @@ app.whenReady().then(() => {
                 notificationWindow = openSipNotificationWindow()
             }
         })
-
         tryCreatingOptionsWindow()
         optionsWindow!.webContents.openDevTools()
     }
@@ -148,8 +147,7 @@ app.whenReady().then(() => {
 
     ipcMain.on("destroy-notification", () => {
         notificationWindow?.destroy()
-        const msg = notificationWindow != undefined ? "Destroyed a notification" : "Notification already destroyed"
-        console.log(msg)
+        console.log("Notification destroyed by user")
     })
 })
 

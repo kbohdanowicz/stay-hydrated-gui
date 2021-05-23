@@ -1,1 +1,1 @@
-export const DROPDOWN_NO_SOUND = "None"
+export const DROPDOWN_NO_SOUND_CUE = "None"

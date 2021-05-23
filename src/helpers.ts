@@ -49,8 +49,11 @@ export function getUpdatedContextMenu(originalMenu: MenuTemplate, newTime: strin
 
 export function destroyWindowAfterSeconds(win: BrowserWindow | undefined, delay: number): void {
     setTimeout(() => {
-        win?.destroy()
-        const msg = win != undefined ? "Destroyed a window" : "Window already destroyed"
-        console.log(msg)
+        if (win?.isDestroyed()) {
+            console.log("Window destroyed by other means")
+        } else {
+            win?.destroy()
+            console.log("Window destroyed by program")
+        }
     }, delay)
 }

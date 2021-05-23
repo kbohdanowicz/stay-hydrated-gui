@@ -2,7 +2,7 @@ import playSound from "./playSound"
 import {ipcRenderer} from "electron"
 import Settings from "./settings"
 import * as fs from "fs"
-import {DROPDOWN_NO_SOUND} from "./constants"
+import {DROPDOWN_NO_SOUND_CUE} from "./constants"
 
 import "./extensions"
 
@@ -43,9 +43,9 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     // buttons
-    function flipButtonsVisibility(): void {
-        btnRemoveSound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND
-        btnPlaySound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND
+    function changeButtonsClickabilityBasedOnDropdownValue(): void {
+        btnRemoveSound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND_CUE
+        btnPlaySound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND_CUE
     }
 
     const btnPlaySound = document.getElementById("btn-play-sound")  as HTMLButtonElement
@@ -56,8 +56,9 @@ window.addEventListener("DOMContentLoaded", () => {
         // todo: show "Are you sure?" dialog
         fs.rmSync(dropdownSounds.value)
         dropdownSounds.remove(dropdownSounds.selectedIndex)
-        dropdownSounds.value = DROPDOWN_NO_SOUND
-        flipButtonsVisibility()
+        dropdownSounds.value = DROPDOWN_NO_SOUND_CUE
+        Settings.update({ soundCue: DROPDOWN_NO_SOUND_CUE})
+        changeButtonsClickabilityBasedOnDropdownValue()
     })
 
     const btnAddSound = document.getElementById("btn-add-sound")!
@@ -70,7 +71,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     dropdownSounds.addEventListener("change", () => {
         Settings.update({ soundCue: dropdownSounds.value })
-        flipButtonsVisibility()
+        changeButtonsClickabilityBasedOnDropdownValue()
     })
 
     // notification:
@@ -131,7 +132,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         dropdownSounds.value = settings.soundCue
-        flipButtonsVisibility()
+        changeButtonsClickabilityBasedOnDropdownValue()
 
         console.log("Initialized HTML values")
     }
@@ -144,7 +145,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!(optionLabels.includes(soundBaseName))) {
                 dropdownSounds.add(new Option(soundBaseName, selectedSoundPath))
                 dropdownSounds.value = selectedSoundPath
-                flipButtonsVisibility()
+                changeButtonsClickabilityBasedOnDropdownValue()
             } else {
                 ipcRenderer.send("show-error-file-already-on-list")
             }
