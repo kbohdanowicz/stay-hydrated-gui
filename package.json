@@ -41,7 +41,18 @@
           "config": {}
         }
       ]
-    }
+    },
+    "publishers": [
+      {
+        "name": "@electron-forge/publisher-github",
+        "config": {
+          "repository": {
+            "owner": "kbohdanowicz",
+            "name": "Stay-Hydrated"
+          }
+        }
+      }
+    ]
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
