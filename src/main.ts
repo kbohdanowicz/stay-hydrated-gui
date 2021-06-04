@@ -11,7 +11,6 @@ require('update-electron-app')({
     updateInterval: '1 hour'
 })
 
-
 import * as path from "path"
 import playSound from "./playSound"
 import { destroyWindowAfterSeconds, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./helpers"

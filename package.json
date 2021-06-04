@@ -7,12 +7,11 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "tsc && electron-forge start",
-    "make-dev": "tsc && electron-forge make --skip-package --targets @electron-forge/maker-squirrel",
-    "make-prod": "prepareForProd.py && setProdSettings.py && tsc && electron-forge make --targets @electron-forge/maker-wix",
-    "package": "prepareForProd.py && setProdSettings.py && tsc && electron-forge package",
-    "publish": "prepareForProd.py && setProdSettings.py && tsc && electron-forge publish --targets @electron-forge/maker-wix",
-    "test-set-prod-settings": "setProdSettings.py",
-    "test-prepare-for-prod": "prepareForProd.py",
+    "make-dev": "python prepareForProd.py && tsc && electron-forge make --targets @electron-forge/maker-squirrel",
+    "make-prod": "tsc && electron-forge make --targets @electron-forge/maker-wix",
+    "package": "tsc && electron-forge package",
+    "publish": "tsc && electron-forge publish --targets @electron-forge/maker-wix",
+    "test-prepare-for-prod": "python prepareForProd.py",
     "lint": "eslint --ext .ts ."
   },
   "keywords": [],
