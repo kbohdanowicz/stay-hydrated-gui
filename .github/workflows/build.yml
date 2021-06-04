@@ -6,10 +6,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - uses: actions/setup-node@main
         with:
           node-version: 14
       - name: install dependencies
         run: npm install
       - name: build
-        run: npm run make
+        run: npm run make-prod

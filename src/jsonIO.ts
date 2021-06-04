@@ -19,6 +19,6 @@ export function writeJsonAsync(path: string, obj: object): void {
 }
 
 export function getThisDirPathWith(path: string): string {
-    console.log(Path.join(__dirname, path))
+    //console.log(Path.join(__dirname, path))
     return Path.join(__dirname, path)
 }

@@ -6,15 +6,20 @@ import * as electronIsDev from "electron-is-dev"
 // show unhandled exceptions at runtime
 unhandled()
 
+// auto update
+require('update-electron-app')({
+    updateInterval: '1 hour'
+})
+
+
 import * as path from "path"
 import playSound from "./playSound"
-import {getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate} from "./helpers"
+import { destroyWindowAfterSeconds, getNextSipLabel, getTimeLeft, getUpdatedContextMenu, MenuTemplate } from "./helpers"
 import { app, BrowserWindow, Menu, Tray, ipcMain, dialog } from "electron"
 import Settings from "./settings"
-import {openSipNotificationWindow} from "./notification"
+import { createNotificationWindow } from "./notification"
 import setDefaultSettings from "./firstRun"
-//import {menuTemplate} from "./constants";
-import {createOptionsWindow} from "./optionsWindow";
+import { createOptionsWindow } from "./optionsWindow";
 
 // initialize extensions
 import "./extensions"
@@ -57,6 +62,11 @@ function tryCreatingOptionsWindow(): void {
     }
 }
 
+function openSipNotificationWindow() {
+    notificationWindow = createNotificationWindow()
+    destroyWindowAfterSeconds(notificationWindow, Settings.get().notification.duration)
+}
+
 function restartSipCountdown(): void {
     clearInterval(countdownId)
     refreshSipIntervalInMillis(Settings.get().sipInterval)
@@ -73,7 +83,9 @@ function startSipCountdown(): void {
     const sipInterval = Settings.get().sipInterval
     countdownId = setInterval(() => {
         playSound()
-        openSipNotificationWindow()
+        if (Settings.get().notification.enabled) {
+            openSipNotificationWindow()
+        }
         restartSipCountdown()
     }, sipInterval)
 }
@@ -93,7 +105,9 @@ app.whenReady().then(() => {
 
     if (electronIsDev) {
         menuTemplate.unshift({ label: 'Show notification', type: 'normal', click: () => {
-                notificationWindow = openSipNotificationWindow()
+                if (Settings.get().notification.enabled) {
+                    openSipNotificationWindow()
+                }
             }
         })
         tryCreatingOptionsWindow()
@@ -145,9 +159,17 @@ app.whenReady().then(() => {
         dialog.showErrorBox("File name error", "Sound with that name is already on the list")
     })
 
+    ipcMain.on("open-notification", () => {
+       openSipNotificationWindow()
+    })
+
     ipcMain.on("destroy-notification", () => {
-        notificationWindow?.destroy()
-        console.log("Notification destroyed by user")
+        if (notificationWindow != undefined) {
+            notificationWindow?.destroy()
+            console.log("Notification is not instantiated")
+        } else {
+            console.log("Notification not destroyed")
+        }
     })
 })
 

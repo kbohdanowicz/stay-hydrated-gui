@@ -5,6 +5,7 @@ import * as fs from "fs"
 import {DROPDOWN_NO_SOUND_CUE} from "./constants"
 
 import "./extensions"
+import {createNotificationWindow} from "./notification";
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -65,7 +66,6 @@ window.addEventListener("DOMContentLoaded", () => {
     btnAddSound.addEventListener("click", () => {
         ipcRenderer.send("open-sound-file-selection-dialog")
     })
-
     // dropdown sounds
     const dropdownSounds = document.getElementById("dropdown-sounds") as HTMLSelectElement
 
@@ -74,8 +74,8 @@ window.addEventListener("DOMContentLoaded", () => {
         changeButtonsClickabilityBasedOnDropdownValue()
     })
 
-    // notification:
-    // - checkbox
+    // ---------------------------- notification ----------------------------
+    // checkbox
     const checkboxNotification = document.getElementById("checkbox-show-notification") as HTMLInputElement
 
     checkboxNotification.addEventListener("input", () => {
@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
         Settings.update({ notification: { enabled: checked } })
     }
 
-    // - duration
+    // duration
     const sliderNotificationDuration = {
         ref: document.getElementById("slider-notification-duration") as HTMLInputElement,
         label: document.getElementById("label-notification-duration") as HTMLLabelElement
@@ -104,7 +104,14 @@ window.addEventListener("DOMContentLoaded", () => {
         const duration = Number(sliderNotificationDuration.ref.value)
         sliderNotificationDuration.label.innerText = duration + (duration == 1 ? " second" : " seconds")
     })
-    //
+
+    // test button
+    const btnTestNotification = document.getElementById("btn-test-notification") as HTMLButtonElement
+    btnTestNotification.addEventListener("click", () => {
+        ipcRenderer.send("open-notification")
+    })
+
+    // ----------------------------
 
     // set initial values of sliders and labels
     {

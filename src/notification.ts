@@ -3,8 +3,7 @@ import Settings from "./Settings"
 import {destroyWindowAfterSeconds} from "./helpers";
 import {getThisDirPathWith} from "./jsonIO";
 
-// todo: custom close "button" (a cross)
-function createNotificationWindow(): BrowserWindow {
+export function createNotificationWindow(): BrowserWindow {
     const display = screen.getPrimaryDisplay()
     const displayWidth = display.bounds.width
     const displayHeight = display.bounds.height
@@ -48,10 +47,4 @@ function createNotificationWindow(): BrowserWindow {
         .catch((err: any) => console.log(err))
 
     return win
-}
-
-export function openSipNotificationWindow(): BrowserWindow | undefined {
-    const notificationWindow = createNotificationWindow()
-    destroyWindowAfterSeconds(notificationWindow, Settings.get().notification.duration)
-    return notificationWindow
 }
