@@ -1,6 +1,6 @@
 {
   "sipInterval": 900000,
-  "trayIcon": "test",
+  "trayIcon": "None",
   "soundCue": "None",
   "soundsDirectory": "None",
   "imagesDirectory": "None",

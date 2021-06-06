@@ -1,13 +1,13 @@
 {
   "name": "stay-hydrated",
   "productName": "Stay Hydrated",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My Electron application description",
   "repository": "github:kbohdanowicz/Stay-Hydrated",
   "main": "dist/main.js",
   "scripts": {
     "start": "tsc && electron-forge start",
-    "make-dev": "python prepareForProd.py && tsc && electron-forge make --targets @electron-forge/maker-squirrel",
+    "make-dev": "python prepareForProd.py && tsc && electron-forge make --targets @electron-forge/maker-wix",
     "make-prod": "tsc && electron-forge make --targets @electron-forge/maker-wix",
     "package": "tsc && electron-forge package",
     "publish": "tsc && electron-forge publish --targets @electron-forge/maker-wix",
