@@ -11,10 +11,10 @@ App starts minimized to tray on user system login.
 A sound cue plays every 15 minutes by default.
 
 #### Tray Menu
-![TrayMenu](https://raw.github.com/kbohdanowicz/Stay-Hydrated/tree/main/TrayMenu.png)
+![TrayMenu](TrayMenu.png)
 
 #### Options Window
-![OptionsWindow](https://raw.github.com/kbohdanowicz/Stay-Hydrated/tree/main/OptionsWindow.png)
+![OptionsWindow](OptionsWindow.png)
 
 
 ## Install
