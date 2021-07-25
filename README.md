@@ -1,12 +1,12 @@
 # Stay-Hydrated
 _Stay Hydrated_ is an [Electron](https://www.electronjs.org/) app that reminds you to drink water via a sound cue.
 
-# Features
+## Features
 - A sound cue plays on an interval
 - Customize interval and sound volume
 - Add your own sound cues in MP3 and WAV formats
 
-# Default behaviour
+## Default behaviour
 App starts minimized to tray on user system login.
 A sound cue plays every 15 minutes by default.
 
@@ -18,11 +18,11 @@ A sound cue plays every 15 minutes by default.
 
 
 
-# Install
+## Install
 The latest official installer for Windows can be found at [Github Releases](https://github.com/kbohdanowicz/Stay-Hydrated/releases) page.
 
-# Sound credits
+## Sound credits
 - `slurp` by fille1000 [Sampling Plus 1.0](https://creativecommons.org/licenses/sampling+/1.0/)
 
-# License
+## License
 See [LICENSE](https://github.com/kbohdanowicz/Stay-Hydrated/blob/main/LICENSE) file.
