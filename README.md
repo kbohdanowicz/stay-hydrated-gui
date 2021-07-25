@@ -17,12 +17,11 @@ A sound cue plays every 15 minutes by default.
 ![OptionsWindow](https://raw.github.com/kbohdanowicz/Stay-Hydrated/tree/main/OptionsWindow.png)
 
 
-
 ## Install
 The latest official installer for Windows can be found at [Github Releases](https://github.com/kbohdanowicz/Stay-Hydrated/releases) page.
 
 ## Sound credits
-- `slurp` by fille1000 [Sampling Plus 1.0](https://creativecommons.org/licenses/sampling+/1.0/)
+- `slurp` by fille1000, available under the [Sampling Plus 1.0](https://creativecommons.org/licenses/sampling+/1.0/)
 
 ## License
 See [LICENSE](https://github.com/kbohdanowicz/Stay-Hydrated/blob/main/LICENSE) file.
