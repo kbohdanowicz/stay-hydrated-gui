@@ -1,8 +1,8 @@
 import {ISettings, UpdateSettingsArgs} from "./types"
-import { getThisDirPathWith, readJsonSync, writeJsonSync } from "./jsonIO"
+import { getScriptDirectory, readJsonSync, writeJsonSync } from "./jsonIO"
 
 function getSettings(): ISettings {
-    return readJsonSync(getThisDirPathWith("../settings/settings.json"))
+    return readJsonSync(getScriptDirectory("../settings/settings.json"))
 }
 
 function updateSettings(settings: UpdateSettingsArgs): void {
@@ -61,7 +61,7 @@ function updateSettings(settings: UpdateSettingsArgs): void {
     //     newSettings.notification.positionY = it.notification.positionY!
     //     newSettings.notification.duration = it.notification.duration!
     // })
-    writeJsonSync(getThisDirPathWith("../settings/settings.json"), newSettings)
+    writeJsonSync(getScriptDirectory("../settings/settings.json"), newSettings)
     console.log("Settings updated")
 }
 

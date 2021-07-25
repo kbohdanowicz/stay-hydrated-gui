@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from "electron"
 import Settings from "./Settings"
 import {destroyWindowAfterSeconds} from "./helpers";
-import {getThisDirPathWith} from "./jsonIO";
+import {getScriptDirectory} from "./jsonIO";
 
 export function createNotificationWindow(): BrowserWindow {
     const display = screen.getPrimaryDisplay()
@@ -37,7 +37,7 @@ export function createNotificationWindow(): BrowserWindow {
         show: false,
         alwaysOnTop: true,
         webPreferences: {
-            preload: getThisDirPathWith("rendererNotification.js")
+            preload: getScriptDirectory("rendererNotification.js")
         },
     })
     win.loadFile("public/html/notification.html")

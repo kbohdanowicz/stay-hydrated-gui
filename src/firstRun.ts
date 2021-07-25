@@ -1,19 +1,19 @@
-import { getThisDirPathWith } from "./jsonIO"
+import { getScriptDirectory } from "./jsonIO"
 import Settings from "./settings"
 
 // should run only once in production
 export default function setDefaultSettings(): void {
     Settings.update({
         sipInterval: 900000,
-        trayIcon: getThisDirPathWith("../resources/images/water-drop.png"),
-        soundCue: getThisDirPathWith("../resources/sounds/slurp.wav"),
-        soundsDirectory: getThisDirPathWith("../resources/sounds/"),
-        imagesDirectory: getThisDirPathWith("../resources/images/"),
-        volume: 0.2,
+        trayIcon: getScriptDirectory("../resources/images/water-drop.png"),
+        soundCue: getScriptDirectory("../resources/sounds/slurp.wav"),
+        soundsDirectory: getScriptDirectory("../resources/sounds/"),
+        imagesDirectory: getScriptDirectory("../resources/images/"),
+        volume: 0.4,
         isFirstRun: false,
         notification: {
-            image: getThisDirPathWith("../resources/images/notification.png"),
-            enabled: true,
+            image: getScriptDirectory("../resources/images/notification.png"),
+            enabled: false,
             positionX: "left",
             positionY: "top",
             duration: 4000

@@ -1,6 +1,5 @@
-import {BrowserWindow, Menu} from "electron"
+import { BrowserWindow, Menu } from "electron"
 
-// todo improve time units (35 min not 34)
 export function getNextSipLabel(newTime: string): string {
     const tempTime = newTime.split(":")
     const minutes = Number(tempTime[0])

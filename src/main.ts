@@ -35,18 +35,10 @@ let optionsWindow: BrowserWindow | undefined = undefined
 let notificationWindow: BrowserWindow | undefined = undefined
 
 const menuTemplate: MenuTemplate = [
-    {
-        label: "", type: 'normal', enabled: false, id: "nextSip"
-    },
-    {
-        label: 'Options', type: 'normal', click: tryCreatingOptionsWindow
-    },
-    {
-        label: 'Restart', type: 'normal', click: restartSipCountdown
-    },
-    {
-        label: 'Quit', type: 'normal', click: quitApp
-    }
+    { label: "", type: 'normal', enabled: false, id: "nextSip" },
+    { label: 'Options', type: 'normal', click: tryCreatingOptionsWindow },
+    { label: 'Restart', type: 'normal', click: restartSipCountdown },
+    { label: 'Quit', type: 'normal', click: quitApp }
 ]
 
 function refreshSipIntervalInMillis(sipInterval: number): void {

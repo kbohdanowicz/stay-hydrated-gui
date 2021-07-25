@@ -8,7 +8,7 @@
   "isFirstRun": true,
   "notification": {
     "image": "None",
-    "enabled": true,
+    "enabled": false,
     "positionX": "left",
     "positionY": "top",
     "duration": 4000

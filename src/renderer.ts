@@ -1,11 +1,10 @@
 import playSound from "./playSound"
-import {ipcRenderer} from "electron"
+import { ipcRenderer } from "electron"
 import Settings from "./settings"
 import * as fs from "fs"
-import {DROPDOWN_NO_SOUND_CUE} from "./constants"
+import { DROPDOWN_NO_SOUND_CUE } from "./constants"
 
 import "./extensions"
-import {createNotificationWindow} from "./notification";
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -19,7 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function updateSipInterval(): void {
         const minutes = Number(sliderSipInterval.ref.value)
-        Settings.update({ sipInterval: sixtySeconds * minutes})
+        Settings.update({ sipInterval: sixtySeconds * minutes })
     }
 
     sliderSipInterval.ref.addEventListener("change", updateSipInterval)
@@ -44,12 +43,16 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     // buttons
-    function changeButtonsClickabilityBasedOnDropdownValue(): void {
-        btnRemoveSound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND_CUE
-        btnPlaySound.disabled = dropdownSounds.value == DROPDOWN_NO_SOUND_CUE
+    function changeButtonClickabilityBasedOnDropdownValue(button: HTMLButtonElement): void {
+        button.disabled = (dropdownSounds.value == DROPDOWN_NO_SOUND_CUE)
     }
 
-    const btnPlaySound = document.getElementById("btn-play-sound")  as HTMLButtonElement
+    function changeButtonsClickabilityBasedOnDropdownValue(): void {
+        btnRemoveSound.disabled = (dropdownSounds.value == DROPDOWN_NO_SOUND_CUE)
+        btnPlaySound.disabled = (dropdownSounds.value == DROPDOWN_NO_SOUND_CUE)
+    }
+
+    const btnPlaySound = document.getElementById("btn-play-sound") as HTMLButtonElement
     btnPlaySound.addEventListener("click", playSound)
 
     const btnRemoveSound = document.getElementById("btn-remove-sound") as HTMLButtonElement
@@ -58,7 +61,7 @@ window.addEventListener("DOMContentLoaded", () => {
         fs.rmSync(dropdownSounds.value)
         dropdownSounds.remove(dropdownSounds.selectedIndex)
         dropdownSounds.value = DROPDOWN_NO_SOUND_CUE
-        Settings.update({ soundCue: DROPDOWN_NO_SOUND_CUE})
+        Settings.update({ soundCue: DROPDOWN_NO_SOUND_CUE })
         changeButtonsClickabilityBasedOnDropdownValue()
     })
 
@@ -74,8 +77,12 @@ window.addEventListener("DOMContentLoaded", () => {
         changeButtonsClickabilityBasedOnDropdownValue()
     })
 
-    // ---------------------------- notification ----------------------------
-    // checkbox
+    // ---------------------------- Notification ----------------------------
+    // - hide notification from user
+    const notificationContainer = document.getElementById("notification-container") as HTMLDivElement
+    notificationContainer.hidden = true
+
+    // - checkbox
     const checkboxNotification = document.getElementById("checkbox-show-notification") as HTMLInputElement
 
     checkboxNotification.addEventListener("input", () => {
@@ -88,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
         Settings.update({ notification: { enabled: checked } })
     }
 
-    // duration
+    // - duration
     const sliderNotificationDuration = {
         ref: document.getElementById("slider-notification-duration") as HTMLInputElement,
         label: document.getElementById("label-notification-duration") as HTMLLabelElement
@@ -105,13 +112,13 @@ window.addEventListener("DOMContentLoaded", () => {
         sliderNotificationDuration.label.innerText = duration + (duration == 1 ? " second" : " seconds")
     })
 
-    // test button
+    // - test button
     const btnTestNotification = document.getElementById("btn-test-notification") as HTMLButtonElement
     btnTestNotification.addEventListener("click", () => {
         ipcRenderer.send("open-notification")
     })
 
-    // ----------------------------
+    // ---------------------------- End ----------------------------
 
     // set initial values of sliders and labels
     {
@@ -123,7 +130,7 @@ window.addEventListener("DOMContentLoaded", () => {
         sliderSipInterval.ref.value = String(settings.sipInterval / sixtySeconds)
         sliderSipInterval.label.innerText = `${sliderSipInterval.ref.value} minutes`
 
-
+        // Notification
         checkboxNotification.checked = settings.notification.enabled
 
         sliderNotificationDuration.ref.disabled = !(checkboxNotification.checked)
@@ -131,6 +138,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const duration = Number(sliderNotificationDuration.ref.value)
         sliderNotificationDuration.label.innerText = duration + (duration == 1 ? " second" : " seconds")
+        // end
 
         const soundFileNames = fs.readdirSync(settings.soundsDirectory)
         for (const fileName of soundFileNames) {
