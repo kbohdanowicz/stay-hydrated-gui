@@ -2,6 +2,8 @@ import { BrowserWindow } from "electron"
 import { getScriptDirectory } from "./jsonIO"
 import * as electronIsDev from "electron-is-dev"
 
+//const electronIsDev = false
+
 export function createOptionsWindow(): BrowserWindow {
     const _window = new BrowserWindow({
         width: electronIsDev ? 1200 : 600,
