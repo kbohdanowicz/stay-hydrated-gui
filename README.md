@@ -2,14 +2,14 @@
 _Stay Hydrated_ is a desktop app that reminds you to drink water via a customizable sound cue.
 
 ### Built With
-- [TypeScript](typescript-url)
-- [Electron](electron-url)
+- [TypeScript][typescript-url]
+- [Electron][electron-url]
 
 
 ## Getting Started
 
 ### Installation
-The latest official installer for Windows can be found at [Github Releases](github-releases-url) page.
+The latest official installer for Windows can be found at [Github Releases][github-releases-url] page.
 
 
 ## Default behaviour
@@ -24,10 +24,10 @@ Users can add custom sounds to the available sounds pool.
 ![OptionsWindow](OptionsWindow.png)
 
 ## Sound credits
-- `slurp` by [fille1000](slurp-url), available under the [Sampling Plus 1.0](creative-commons-licence-url)
+- `slurp` by [fille1000][slurp-url], available under the [Sampling Plus 1.0][creative-commons-licence-url]
 
 ## License
-Distributed under the MIT License. See [LICENSE](licence-url) for more information.
+Distributed under the MIT License. See [LICENSE][licence-url] for more information.
 
 <!-- VARIABLES -->
 [slurp-url]: https://soundbible.com/1527-Slurp.html
