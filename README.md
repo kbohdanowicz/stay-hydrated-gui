@@ -1,28 +1,3 @@
-<br />
-<p align="center">
-  <h3 align="center">Stau Hydrated</h3>
-</p>
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#sound-credits">Sound credits</a></li>
-    <li><a href="#license">License</a></li>
-  </ol>
-</details>
-
 ## About The Project
 _Stay Hydrated_ is a desktop app that reminds you to drink water via a customizable sound cue.
 
