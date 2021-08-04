@@ -15,7 +15,7 @@ The latest official installer for Windows can be found at [Github Releases](gith
 ## Default behaviour
 App starts minimized to tray on user system login.
 A sound cue plays every 15 minutes by default.
-User can add custom sounds to the sound list.
+Users can add custom sounds to the available sounds pool.
 
 #### Tray Menu
 ![TrayMenu](TrayMenu.png)
